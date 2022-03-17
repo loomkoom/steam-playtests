@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "axios": "^0.26.1",
+    "discord.js": "^13.6.0",
+    "steam-user": "^4.24.0",
+    "steamcommunity": "^3.44.0",
+    "steamid": "^2.0.0"
+  }
+}
