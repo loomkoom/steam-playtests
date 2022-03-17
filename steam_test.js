@@ -4,7 +4,7 @@ const {Client, Intents, MessageEmbed} = require("discord.js")
 const fs = require('fs');
 
 const discClient = new Client({
-    intents: [Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_TYPING]
+    intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING]
 })
 discClient.destroy();
 discClient.login("NjE5ODk2NTc2NDk5OTA4NjE4.XXO6aQ.FPHqOIF5aX9gyhI3l4N0F0FLuls")
@@ -18,6 +18,13 @@ discClient.login("NjE5ODk2NTc2NDk5OTA4NjE4.XXO6aQ.FPHqOIF5aX9gyhI3l4N0F0FLuls")
 let client = new steamUser();
 
 
+fs.access('key.txt', (err, hasAccess) => {
+        if (!hasAccess) {
+            fs.writeFile('key.txt', '', err => {
+            })
+        }
+    }
+)
 fs.readFile('key.txt', 'utf8', function (err, data) {
     if (err) {
         return console.log(err);
@@ -58,7 +65,7 @@ client.on('loginKey', function (key) {
 });
 
 client.on('changelist', function (changeNumber, changeApps, changePackages) {
-    fs.writeFile('change.txt', changeNumber.toString(), {flag: 'w'}, err => {
+    fs.writeFile('change.txt', changeNumber.toString(), err => {
     })
     console.log(`-- Change - NEW: ${changeNumber}`);
     let msg = "---BETA\n"
