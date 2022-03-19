@@ -331,3 +331,4 @@ cython_debug/
 ./key.txt
 ./change.txt
 ./package-lock.json
+/test.js
