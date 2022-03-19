@@ -8,51 +8,30 @@ const discClient = new Client({
     intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING]
 })
 client.setOptions({enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 30000});
-discClient.login("NjE5ODk2NTc2NDk5OTA4NjE4.XXO6aQ.FPHqOIF5aX9gyhI3l4N0F0FLuls")
-    .then(() => {
-        console.info('[DISCORD] ->   logged in as ' + discClient.user.tag);
-        // discClient.channels.cache.clear()
-        // discClient.channels.fetch(954115013503750194)
-        //     .then(channel => channel.send('test'))
-    })
 
-let client = new steamUser();
-
-
-fs.access('key.txt', (err, hasAccess) => {
-        if (!hasAccess) {
-            fs.writeFile('key.txt', '', err => {
-            })
-        }
-    }
-)
-fs.readFile('key.txt', 'utf8', function (err, data) {
+let config;
+fs.readFile('config.json', 'utf8', function (err, data) {
     if (err) {
         return console.log(err);
     }
-    let logKey = data.trim()
-    client.logOn({
-        accountName: "loomkoom",
-        password: "3XmUdrxPZkY5",
-        loginKey: logKey,
-        rememberPassword: true,
-
-    });
+    config = JSON.parse(data);
+    let steamCredentials = {
+        accountName: config.steamUser, password: config.steamPass, loginKey: config.steamKey, rememberPassword: true,
+    }
+    client.logOn(steamCredentials);
+    discClient.login(config.discord)
+        .then(() => {
+            console.info('[DISCORD] ->   logged in as ' + discClient.user.tag);
+        })
 });
 
 
 let g_sessionID;
-
-
-var g_sessionID;
 client.on('webSession', function (sessionID, cookies) {
     g_sessionID = sessionID;
     axios.defaults.headers.Cookie = cookies
     console.log("Session: ", sessionID);
 });
-
-})
-;
 
 client.on('loggedOn', () => {
     console.log(`[STEAM]   ->   ${client.vanityURL} (${client.steamID.getSteamID64()}, ${client.steamID.getSteam2RenderedID()}, ${client.steamID.getSteam3RenderedID()})`);
@@ -61,12 +40,29 @@ client.on('loggedOn', () => {
 
 client.on('loginKey', function (key) {
     console.log("loginKey: ", key);
-    fs.writeFile('key.txt', key, {flag: 'w'}, err => {
+    config.steamKey = key;
+    fs.writeFile('config.json', JSON.stringify(config), {flag: 'w'}, err => {
     })
 });
 
+client.once('changelist', function (changeNumber) {
+    let lastChangeNumber;
+    fs.readFile('config.json', 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        } else {
+            lastChangeNumber = JSON.parse(data).changeNumber;
+            lastChangeNumber = Math.max(parseInt(data), changeNumber - 5000)
+        }
+        client.getProductChanges(lastChangeNumber).then((result) => {
+            fetchChanges(result.currentChangeNumber, result.appChanges, result.packageChanges)
+        })
+    })
+})
+
 client.on('changelist', function (changeNumber, changeApps, changePackages) {
-    fs.writeFile('change.txt', changeNumber.toString(), err => {
+    config.changeNumber = changeNumber;
+    fs.writeFile('config.json', JSON.stringify(config), err => {
     })
     console.log(`-- Change - NEW: ${changeNumber}`);
     fetchChanges(changeNumber, changeApps, changePackages)

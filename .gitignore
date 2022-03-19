@@ -328,7 +328,5 @@ cython_debug/
 
 
 # custom
-./key.txt
-./change.txt
-./package-lock.json
 /test.js
+/steam_test.py
