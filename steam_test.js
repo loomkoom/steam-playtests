@@ -93,7 +93,7 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         if (active && !(app in client.getOwnedApps())) {
                             requestPlaytest(app, parent, title, embed);
                         }
-                        discClient.channels.fetch(276023946657136640)g
+                        discClient.channels.fetch(276023946657136640)
                             .then(channel => channel.send({embeds: [embed]}));
                     });
                 }
