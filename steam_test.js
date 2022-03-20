@@ -102,7 +102,7 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         discClient.channels.cache.get('954115013503750194').fetchWebhooks()
                             .then(webhook => webhook.first().send({
                                 username: title,
-                                avatarURL: image,
+                                avatarURL: icon,
                                 embeds: [embed],
                             }))
                         //discClient.channels.fetch(276023946657136640)
