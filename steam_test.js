@@ -7,7 +7,7 @@ let client = new steamUser();
 const discClient = new Client({
     intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING]
 })
-client.setOptions({enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 30000});
+client.setOptions({enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 10000});
 
 let config;
 fs.readFile('config.json', 'utf8', function (err, data) {
