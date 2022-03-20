@@ -22,6 +22,8 @@ fs.readFile('config.json', 'utf8', function (err, data) {
     discClient.login(config.discord)
         .then(() => {
             console.info('[DISCORD] ->   logged in as ' + discClient.user.tag);
+            discClient.channels.fetch(954115013503750194)
+                        .then(channel => channel.send('Bot online'));
         })
 });
 
