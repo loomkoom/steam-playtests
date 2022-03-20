@@ -93,22 +93,22 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         if (active && !(app in client.getOwnedApps())) {
                             requestPlaytest(app, parent, title, embed);
                         }
-                        discClient.channels.fetch(276023946657136640)
+                        discClient.channels.fetch(276023946657136640)g
                             .then(channel => channel.send({embeds: [embed]}));
                     });
                 }
             }
         }
 
-        if (result.packages && Object.keys(result.packages).length) {
-            for (let pack of Object.keys(result.packages)) {
-                out.push(` - package: <https://steamdb.info/sub/${pack}> - ${result.packages[pack].packageinfo ? (result.packages[pack].packageinfo.name || 'Unknown') : 'Unknown App'}`);
-            }
-        }
-
-        if ((result.unknownApps && result.unknownApps.length) || (result.unknownPackages && result.unknownPackages.length)) {
-            out.push(`${result.unknownApps.length} Unknown Apps and ${result.unknownPackages.length} Unknown Packages`);
-        }
+        // if (result.packages && Object.keys(result.packages).length) {
+        //     for (let pack of Object.keys(result.packages)) {
+        //         out.push(` - package: <https://steamdb.info/sub/${pack}> - ${result.packages[pack].packageinfo ? (result.packages[pack].packageinfo.name || 'Unknown') : 'Unknown App'}`);
+        //     }
+        // }
+        //
+        // if ((result.unknownApps && result.unknownApps.length) || (result.unknownPackages && result.unknownPackages.length)) {
+        //     out.push(`${result.unknownApps.length} Unknown Apps and ${result.unknownPackages.length} Unknown Packages`);
+        // }
 
         //console.log(out.join('\n'));
         console.log(beta.join('\n'));
