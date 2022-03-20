@@ -25,7 +25,7 @@ fs.readFile('config.json', 'utf8', function (err, data) {
         })
 });
 
-discClient.on('ready',()=> discClient.channels.fetch('954115013503750194').then(c=>c.send('Bot online')))
+discClient.on('ready', () => discClient.channels.fetch('954115013503750194').then(c => c.send('Bot online')))
 
 
 let g_sessionID;
@@ -96,10 +96,14 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         console.log(app in client.getOwnedApps(), app in client.picsCache.apps)
                         if (active && !client.ownsApp(app)) {
                             requestPlaytest(app, parent, title, embed);
+                        } else if (client.ownsApp(app)){
+                                          embed.addField('Owned', '\u200B',true)
                         }
                         let image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
                         let icon = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.icon}.jpg`
                         embed.setThumbnail(image)
+                        embed.addField('Links: ', `[Store](https://store.steampowered.com/app/${app}) | [SteamDB - parent](https://steamdb.info/app/${parent}) | [SteamDB - app](https://steamdb.info/app/${app})`)
+
 
                         discClient.channels.cache.get('954115013503750194').fetchWebhooks()
                             .then(webhook => webhook.first().send({
@@ -107,8 +111,6 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                                 avatarURL: icon,
                                 embeds: [embed],
                             }))
-                        //discClient.channels.fetch(276023946657136640)
-                        //    .then(channel => channel.send({embeds: [embed]}));
                     });
                 }
             }
@@ -146,14 +148,13 @@ function requestPlaytest(app, parent, title, embed) {
             }
             if (granted === 1) {
                 console.log(`New playtest requested (${app}) : \n\t${title} \n\tparent: ${parent}\n\t=> Instant Access`);
-                embed.addField('New playtest requested', 'Instant Access')
+                embed.addField('New playtest requested', 'Instant Access',true)
             } else if (granted === null) {
                 console.log(`New playtest requested (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> Requested Access`);
-                embed.addField('New playtest requested', 'Requested Access')
+                embed.addField('New playtest requested', 'Requested Access',true)
             } else if (!success || success !== 1) {
                 console.warn(`FAILED playtest request (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> response : ${responseText} -  (${response.status}: ${response.statusText})`);
             }
-            embed.addField('Links: ', `[Store](https://store.steampowered.com/app/${app}) | [SteamDB - parent](https://steamdb.info/app/${parent}) | [SteamDB - app](https://steamdb.info/app/${app})`)
 
         })
         .catch(function (error) {
