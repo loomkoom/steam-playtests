@@ -93,7 +93,7 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         let active = resp.data.indexOf('RequestPlaytestAccess') > 0;
 
                         embed.addField('Store Button: ', `${"Yes" ? active : "No"}`)
-                        console.log(app in client.getOwnedApps(), app in client.picsCache.apps)
+                        console.log(client.ownsApp(app), app in client.picsCache.apps)
                         if (active && !client.ownsApp(app)) {
                             requestPlaytest(app, parent, title, embed);
                         } else if (client.ownsApp(app)){
