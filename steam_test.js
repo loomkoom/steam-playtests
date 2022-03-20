@@ -83,18 +83,30 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                     beta.push(`${app}, ${title} - beta for  ${parent}`);
                     const embed = new MessageEmbed()
                         .addFields(
-                            {name: `${title} (${app})`, value: `Parent:\t${parent}`},
-                            {name: '\u200B', value: '\u200B'})
+                            {
+                                name: `${title} (${app})`,
+                                value: `Parent: ${parent}\nRelease Date: <t:${apps[app].appinfo.common.steam_release_date}:D>`
+                            })
                     axios.get(`https://store.steampowered.com/app/${parent}`).then(resp => {
                         let active = resp.data.indexOf('RequestPlaytestAccess') > 0;
 
                         embed.addField('Store Button: ', `${"Yes" ? active : "No"}`)
                         console.log(app in client.getOwnedApps(), app in client.picsCache.apps)
-                        if (active && !(app in client.getOwnedApps())) {
+                        if (active && !client.ownsApp(app)) {
                             requestPlaytest(app, parent, title, embed);
                         }
-                        discClient.channels.fetch(276023946657136640)
-                            .then(channel => channel.send({embeds: [embed]}));
+                        let image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
+                        let icon = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.icon}.jpg`
+                        embed.setThumbnail(image)
+
+                        discClient.channels.cache.get('954115013503750194').fetchWebhooks()
+                            .then(webhook => webhook.first().send({
+                                username: title,
+                                avatarURL: image,
+                                embeds: [embed],
+                            }))
+                        //discClient.channels.fetch(276023946657136640)
+                        //    .then(channel => channel.send({embeds: [embed]}));
                     });
                 }
             }
