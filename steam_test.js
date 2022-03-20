@@ -71,12 +71,13 @@ client.on('changelist', function (changeNumber, changeApps, changePackages) {
 function fetchChanges(changeNumber, changeApps, changePackages) {
     client.getProductInfo(changeApps, changePackages).then(result => {
         let apps = result.apps;
-        let out = [`*Changelist - <https://steamdb.info/changelist/${changeNumber}> (${changeApps.length} apps and ${changePackages.length} packages)`];
+        //let out = [`*Changelist - <https://steamdb.info/changelist/${changeNumber}> (${changeApps.length} apps and ${changePackages.length} packages)`];
+        console.log(`*Changelist - <https://steamdb.info/changelist/${changeNumber}> (${changeApps.length} apps and ${changePackages.length} packages)`);
         let beta = []
         if (apps && Object.keys(apps).length) {
             for (let app of Object.keys(apps)) {
                 let title = apps[app].appinfo.common ? (apps[app].appinfo.common.name || 'Unknown') : 'Unknown App';
-                out.push(` - App: <https://steamdb.info/app/${app}> - ${title}`);
+                //out.push(` - App: <https://steamdb.info/app/${app}> - ${title}`);
                 if (!(apps[app].appinfo === undefined) && !(apps[app].appinfo.extended === undefined) && !(apps[app].appinfo.extended.betaforappid === undefined)) {
                     let parent = apps[app].appinfo.extended.betaforappid;
                     beta.push(`${app}, ${title} - beta for  ${parent}`);
@@ -109,7 +110,7 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
             out.push(`${result.unknownApps.length} Unknown Apps and ${result.unknownPackages.length} Unknown Packages`);
         }
 
-        console.log(out.join('\n'));
+        //console.log(out.join('\n'));
         console.log(beta.join('\n'));
     });
 }
