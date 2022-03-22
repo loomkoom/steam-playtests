@@ -99,7 +99,13 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         } else if (client.ownsApp(app)){
                                           embed.addField('Owned', '\u200B',true)
                         }
-                        let image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
+                        let image;
+                        if (appinfo.common.small_capsule) {
+                            image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
+                        }
+                        else {
+                            image = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.logo}.jpg`
+                        }
                         let icon = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.icon}.jpg`
                         embed.setThumbnail(image)
                         embed.addField('Links: ', `[Store](https://store.steampowered.com/app/${app}) | [SteamDB - parent](https://steamdb.info/app/${parent}) | [SteamDB - app](https://steamdb.info/app/${app})`)
