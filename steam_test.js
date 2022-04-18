@@ -2,6 +2,8 @@ const steamUser = require("steam-user");
 const axios = require("axios");
 const {Client, Intents, MessageEmbed} = require("discord.js")
 const fs = require('fs');
+const path = require('path');
+
 
 let client = new steamUser();
 const discClient = new Client({
@@ -10,7 +12,8 @@ const discClient = new Client({
 client.setOptions({enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 10000});
 
 let config;
-fs.readFile('config.json', 'utf8', function (err, data) {
+let configPath = path.join(__dirname, 'config.json');
+fs.readFile(configPath, 'utf8', function (err, data) {
     if (err) {
         return console.log(err);
     }
@@ -54,7 +57,9 @@ client.once('changelist', function (changeNumber) {
             return console.log(err);
         } else {
             lastChangeNumber = JSON.parse(data).changeNumber;
+            console.log(lastChangeNumber)
             lastChangeNumber = Math.max(parseInt(data), changeNumber - 5000)
+            console.log(lastChangeNumber)
         }
         client.getProductChanges(lastChangeNumber).then((result) => {
             fetchChanges(result.currentChangeNumber, result.appChanges, result.packageChanges)
@@ -96,14 +101,13 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         console.log(client.ownsApp(app), app in client.picsCache.apps)
                         if (active && !client.ownsApp(app)) {
                             requestPlaytest(app, parent, title, embed);
-                        } else if (client.ownsApp(app)){
-                                          embed.addField('Owned', '\u200B',true)
+                        } else if (client.ownsApp(app)) {
+                            embed.addField('Owned', '\u200B', true)
                         }
                         let image;
                         if (appinfo.common.small_capsule) {
                             image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
-                        }
-                        else {
+                        } else {
                             image = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.logo}.jpg`
                         }
                         let icon = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.icon}.jpg`
@@ -154,10 +158,10 @@ function requestPlaytest(app, parent, title, embed) {
             }
             if (granted === 1) {
                 console.log(`New playtest requested (${app}) : \n\t${title} \n\tparent: ${parent}\n\t=> Instant Access`);
-                embed.addField('New playtest requested', 'Instant Access',true)
+                embed.addField('New playtest requested', 'Instant Access', true)
             } else if (granted === null) {
                 console.log(`New playtest requested (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> Requested Access`);
-                embed.addField('New playtest requested', 'Requested Access',true)
+                embed.addField('New playtest requested', 'Requested Access', true)
             } else if (!success || success !== 1) {
                 console.warn(`FAILED playtest request (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> response : ${responseText} -  (${response.status}: ${response.statusText})`);
             }
