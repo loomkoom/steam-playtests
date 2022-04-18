@@ -105,7 +105,7 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                             embed.addField('Owned', '\u200B', true)
                         }
                         let image;
-                        if (appinfo.common.small_capsule) {
+                        if (apps[app].appinfo.common.small_capsule) {
                             image = `http://cdn.akamai.steamstatic.com/steam/apps/${app}/${apps[app].appinfo.common.small_capsule.english}`
                         } else {
                             image = `https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/${app}/${apps[app].appinfo.common.logo}.jpg`
