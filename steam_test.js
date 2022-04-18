@@ -18,8 +18,15 @@ fs.readFile(configPath, 'utf8', function (err, data) {
         return console.log(err);
     }
     config = JSON.parse(data);
-    let steamCredentials = {
-        accountName: config.steamUser, password: config.steamPass, loginKey: config.steamKey, rememberPassword: true,
+    let steamCredentials;
+    if (config.steamKey) {
+        steamCredentials = {
+            accountName: config.steamUser, password: config.steamPass, loginKey: config.steamKey, rememberPassword: true
+        }
+    } else {
+        steamCredentials = {
+            accountName: config.steamUser, password: config.steamPass, rememberPassword: true
+        }
     }
     client.logOn(steamCredentials);
     discClient.login(config.discord)
