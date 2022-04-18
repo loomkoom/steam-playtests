@@ -65,9 +65,9 @@ client.once('changelist', function (changeNumber) {
         if (err) {
             return console.log(err);
         } else {
-            lastChangeNumber = JSON.parse(data).changeNumber;
+            lastChangeNumber = parseInt(JSON.parse(data).changeNumber);
             console.log(lastChangeNumber)
-            lastChangeNumber = Math.max(parseInt(data), changeNumber - 5000)
+            lastChangeNumber = Math.max(lastChangeNumber, changeNumber - 5000)
             console.log(lastChangeNumber)
         }
         client.getProductChanges(lastChangeNumber).then((result) => {
