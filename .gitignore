@@ -328,6 +328,6 @@ cython_debug/
 
 
 # custom
-/test.js
-/steam_test.py
-/config.json
+test.js
+steam_test.py
+config.json
