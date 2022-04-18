@@ -1,22 +1,33 @@
 const steamUser = require("steam-user");
 const axios = require("axios");
-const {Client, Intents, MessageEmbed} = require("discord.js")
+const { Client, Intents, MessageEmbed } = require("discord.js")
 const fs = require('fs');
+const path = require('path');
 
 let client = new steamUser();
 const discClient = new Client({
     intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING]
 })
-client.setOptions({enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 10000});
+client.setOptions({ enablePicsCache: true, picsCacheAll: true, changelistUpdateInterval: 10000 });
+
 
 let config;
-fs.readFile('config.json', 'utf8', function (err, data) {
+let configPath = path.join(__dirname, 'config.json');
+fs.readFile(configPath, 'utf8', function (err, data) {
     if (err) {
         return console.log(err);
     }
     config = JSON.parse(data);
-    let steamCredentials = {
-        accountName: config.steamUser, password: config.steamPass, loginKey: config.steamKey, rememberPassword: true,
+    let steamCredentials;
+    if (config.steamKey) {
+        steamCredentials = {
+            accountName: config.steamUser, password: config.steamPass, loginKey: config.steamKey, rememberPassword: true
+        }
+    }
+    else {
+        steamCredentials = {
+            accountName: config.steamUser, password: config.steamPass, rememberPassword: true
+        }
     }
     client.logOn(steamCredentials);
     discClient.login(config.discord)
@@ -43,7 +54,7 @@ client.on('loggedOn', () => {
 client.on('loginKey', function (key) {
     console.log("loginKey: ", key);
     config.steamKey = key;
-    fs.writeFile('config.json', JSON.stringify(config), {flag: 'w'}, err => {
+    fs.writeFile('config.json', JSON.stringify(config), { flag: 'w' }, err => {
     })
 });
 
@@ -96,8 +107,8 @@ function fetchChanges(changeNumber, changeApps, changePackages) {
                         console.log(client.ownsApp(app), app in client.picsCache.apps)
                         if (active && !client.ownsApp(app)) {
                             requestPlaytest(app, parent, title, embed);
-                        } else if (client.ownsApp(app)){
-                                          embed.addField('Owned', '\u200B',true)
+                        } else if (client.ownsApp(app)) {
+                            embed.addField('Owned', '\u200B', true)
                         }
                         let image;
                         if (apps[app].appinfo.common.small_capsule) {
@@ -154,10 +165,10 @@ function requestPlaytest(app, parent, title, embed) {
             }
             if (granted === 1) {
                 console.log(`New playtest requested (${app}) : \n\t${title} \n\tparent: ${parent}\n\t=> Instant Access`);
-                embed.addField('New playtest requested', 'Instant Access',true)
+                embed.addField('New playtest requested', 'Instant Access', true)
             } else if (granted === null) {
                 console.log(`New playtest requested (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> Requested Access`);
-                embed.addField('New playtest requested', 'Requested Access',true)
+                embed.addField('New playtest requested', 'Requested Access', true)
             } else if (!success || success !== 1) {
                 console.warn(`FAILED playtest request (${app}): \n\t${title} \n\tparent: ${parent}\n\t=> response : ${responseText} -  (${response.status}: ${response.statusText})`);
             }
